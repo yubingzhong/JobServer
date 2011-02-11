@@ -63,7 +63,7 @@ public class JobServer {
 		.withDescription("显示帮助").create("h");
 		
 		Option logging = OptionBuilder.withArgName("log file").withLongOpt("logging-file").hasArg()
-		.withDescription("日志配置文件").create("h");
+		.withDescription("日志配置文件").create("l");
 
 
 		options.addOption( config );
