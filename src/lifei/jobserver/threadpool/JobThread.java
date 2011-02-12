@@ -70,10 +70,9 @@ public class JobThread implements Runnable {
 		
 		StringBuffer sb = new StringBuffer(1000);
 
-		sb.append("<style>th td {padding-left:20px;padding-right:20px;}</style>");
-		sb.append("<table border=\"1\" width=\"80%\">");
+		sb.append("<table align=\"center\" border=\"1\" width=\"80%\">");
 		sb.append("<tr><th style=\"height:24px;font-size:14px;padding-left:20px;padding-right:20px;line-height:24px\" colspan=\"2\">${job.id}号作业 “${job.name}” 运行情况报告表</th></tr>");
-		sb.append("<tr><td style=\"height:24px;font-size:14px;padding-left:20px;padding-right:20px;line-height:24px\" width=\"33%\">作业ID:</td><td style=\"height:24px;font-size:14px;padding-left:5px;line-height:24px\">${job.id}</td></tr>");
+		sb.append("<tr><td style=\"width:100px;height:24px;font-size:14px;padding-left:20px;padding-right:20px;line-height:24px\">作业ID:</td><td style=\"height:24px;font-size:14px;padding-left:5px;line-height:24px\">${job.id}</td></tr>");
 		sb.append("<tr><td style=\"height:24px;font-size:14px;padding-left:20px;padding-right:20px;line-height:24px\">作业名称:</td><td style=\"height:24px;font-size:14px;padding-left:5px;line-height:24px\">${job.name}</td></tr>");
 		sb.append("<tr><td style=\"height:24px;font-size:14px;padding-left:20px;padding-right:20px;line-height:24px\">作业描述:</td><td style=\"height:24px;font-size:14px;padding-left:5px;line-height:24px\">${job.desc}</td></tr>");
 		sb.append("<tr><td style=\"height:24px;font-size:14px;padding-left:20px;padding-right:20px;line-height:24px\">用户:</td><td style=\"height:24px;font-size:14px;padding-left:5px;line-height:24px\">${job.user}</td></tr>");
