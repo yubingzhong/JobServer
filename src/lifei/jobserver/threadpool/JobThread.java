@@ -48,9 +48,13 @@ public class JobThread implements Runnable {
 			this.runBefore();
 			this.proccess();
 		} catch (Exception e) {
-			logger.fatal("致命错误：" + e.getMessage());
+			logger.fatal("致命错误@run：" + e.getMessage());
 		} finally {
-			this.runAfter();
+			try {
+				this.runAfter();
+			} catch(Exception e) {
+				logger.fatal("致命错误@runAfter：" + e.getMessage());
+			}
 		}
 
 	}
@@ -66,24 +70,26 @@ public class JobThread implements Runnable {
 		
 		StringBuffer sb = new StringBuffer(1000);
 
-		
-		sb.append("<table border=\"1\" width=\"100%\">");
-		sb.append("<tr><th colspan=\"2\">${job.id}号作业 “${job.name}” 运行情况报告表</th></tr>");
-		sb.append("<tr><td width=\"33%\">作业ID:</td><td>${job.id}</td></tr>");
-		sb.append("<tr><td>作业名称:</td><td>${job.name}</td></tr>");
-		sb.append("<tr><td>作业描述:</td><td>${job.desc}</td></tr>");
-		sb.append("<tr><td>用户:</td><td>${job.user}</td></tr>");
-		sb.append("<tr><td>环境目录:</td><td>${job.workdir}</td></tr>");
-		sb.append("<tr><td>运行命令:</td><td>${job.command}</td></tr>");
-		sb.append("<tr><td>提交时间:</td><td>${job.createtime}</td></tr>");
-		sb.append("<tr><td>运行时间:</td><td>${job.executetime}</td></tr>");
-		sb.append("<tr><td>结束时间:</td><td>${job.finishtime}</td></tr>");
-		sb.append("<tr><td>运行结果:</td><td>${job.exitvalue==0?'成功':'失败'}</td></tr>");
-		sb.append("<tr><td>状态:</td><td>${job.status}</td></tr>");
-		sb.append("<tr><td colspan=\"2\">运行输出:</td></tr>");
-		sb.append("<tr><td colspan=\"2\"><pre>${job.stdout}</pre></td></tr>");
-		sb.append("<tr><td colspan=\"2\">错误输出:</td></tr>");
-		sb.append("<tr><td colspan=\"2\"><pre>${job.stderr}</pre></td></tr>");
+		sb.append("<style>th td {padding-left:20px;padding-right:20px;}</style>");
+		sb.append("<table border=\"1\" width=\"80%\">");
+		sb.append("<tr><th style=\"height:24px;font-size:14px;padding-left:20px;padding-right:20px;line-height:24px\" colspan=\"2\">${job.id}号作业 “${job.name}” 运行情况报告表</th></tr>");
+		sb.append("<tr><td style=\"height:24px;font-size:14px;padding-left:20px;padding-right:20px;line-height:24px\" width=\"33%\">作业ID:</td><td style=\"height:24px;font-size:14px;padding-left:5px;line-height:24px\">${job.id}</td></tr>");
+		sb.append("<tr><td style=\"height:24px;font-size:14px;padding-left:20px;padding-right:20px;line-height:24px\">作业名称:</td><td style=\"height:24px;font-size:14px;padding-left:5px;line-height:24px\">${job.name}</td></tr>");
+		sb.append("<tr><td style=\"height:24px;font-size:14px;padding-left:20px;padding-right:20px;line-height:24px\">作业描述:</td><td style=\"height:24px;font-size:14px;padding-left:5px;line-height:24px\">${job.desc}</td></tr>");
+		sb.append("<tr><td style=\"height:24px;font-size:14px;padding-left:20px;padding-right:20px;line-height:24px\">用户:</td><td style=\"height:24px;font-size:14px;padding-left:5px;line-height:24px\">${job.user}</td></tr>");
+		sb.append("<tr><td style=\"height:24px;font-size:14px;padding-left:20px;padding-right:20px;line-height:24px\">环境目录:</td><td style=\"height:24px;font-size:14px;padding-left:5px;line-height:24px\">${job.workdir}</td></tr>");
+		sb.append("<tr><td style=\"height:24px;font-size:14px;padding-left:20px;padding-right:20px;line-height:24px\">运行命令:</td><td style=\"height:24px;font-size:14px;padding-left:5px;line-height:24px\">${job.command}</td></tr>");
+		sb.append("<tr><td style=\"height:24px;font-size:14px;padding-left:20px;padding-right:20px;line-height:24px\">提交时间:</td><td style=\"height:24px;font-size:14px;padding-left:5px;line-height:24px\">" + DateFormatUtils.format(job.createtime,"yyyy-MM-dd HH:mm:ss") + "</td></tr>");
+		sb.append("<tr><td style=\"height:24px;font-size:14px;padding-left:20px;padding-right:20px;line-height:24px\">开始时间:</td><td style=\"height:24px;font-size:14px;padding-left:5px;line-height:24px\">" + DateFormatUtils.format(job.executetime,"yyyy-MM-dd HH:mm:ss") + "</td></tr>");
+		sb.append("<tr><td style=\"height:24px;font-size:14px;padding-left:20px;padding-right:20px;line-height:24px\">结束时间:</td><td style=\"height:24px;font-size:14px;padding-left:5px;line-height:24px\">" + DateFormatUtils.format(job.finishtime,"yyyy-MM-dd HH:mm:ss") + "</td></tr>");
+		sb.append("<tr><td style=\"height:24px;font-size:14px;padding-left:20px;padding-right:20px;line-height:24px\">运行耗时:</td><td style=\"height:24px;font-size:14px;padding-left:5px;line-height:24px\">" + ((job.finishtime - job.executetime) / 1000)  + "秒</td></tr>");
+		sb.append("<tr><td style=\"height:24px;font-size:14px;padding-left:20px;padding-right:20px;line-height:24px\">运行结果:</td><td style=\"height:24px;font-size:14px;padding-left:5px;line-height:24px\">${job.status>-1?'成功':'失败'}</td></tr>");
+		sb.append("<tr><td style=\"height:24px;font-size:14px;padding-left:20px;padding-right:20px;line-height:24px\">状态:</td><td style=\"height:24px;font-size:14px;padding-left:5px;line-height:24px\">${job.status}</td></tr>");
+		sb.append("<tr><td style=\"height:24px;font-size:14px;padding-left:20px;padding-right:20px;line-height:24px\">错误信息:</td><td style=\"height:24px;font-size:14px;padding-left:5px;line-height:24px\">${job.error}</td></tr>");
+		sb.append("<tr><td style=\"height:24px;font-size:14px;padding-left:20px;padding-right:20px;line-height:24px\" colspan=\"2\">运行输出:</td></tr>");
+		sb.append("<tr><td style=\"height:24px;font-size:14px;padding-left:20px;padding-right:20px;line-height:24px\" colspan=\"2\"><pre>${job.stdout}</pre></td></tr>");
+		sb.append("<tr><td style=\"height:24px;font-size:14px;padding-left:20px;padding-right:20px;line-height:24px\" colspan=\"2\">错误输出:</td></tr>");
+		sb.append("<tr><td style=\"height:24px;font-size:14px;padding-left:20px;padding-right:20px;line-height:24px\" colspan=\"2\"><pre>${job.stderr}</pre></td></tr>");
 		sb.append("</table>");
 		
 
@@ -115,18 +121,18 @@ public class JobThread implements Runnable {
 			
 			
 		} catch (CompilationFailedException e) {
-			logger.error("整理邮件内容发送错误：" + e.getMessage());
+			logger.error("整理邮件内容发送错误@runAfter：" + e.getMessage());
 		} catch (ClassNotFoundException e) {
-			logger.error("整理邮件内容发送错误：" + e.getMessage());
+			logger.error("整理邮件内容发送错误@runAfter：" + e.getMessage());
 		} catch (IOException e) {
-			logger.error("整理邮件内容发送错误：" + e.getMessage());
+			logger.error("整理邮件内容发送错误@runAfter：" + e.getMessage());
 		}
 	}
 
 	private void proccess() throws Exception {
 		
-		this.job.executetime = (System.currentTimeMillis() / 1000);
-		this.job.status ++;
+		this.job.executetime = System.currentTimeMillis();
+		this.job.status = 1;
 		this.job.save(this.session);
 		
 		logger.info(String.format("作业:\"%s\"于%s开始运行。", this.job.name, DateFormatUtils.format(new Date(), "yyyy-MM-dd HH:mm:ss")));
@@ -140,12 +146,13 @@ public class JobThread implements Runnable {
 			this.job.stdout = IOUtils.toString(this.process.getInputStream());
 			this.job.stderr = IOUtils.toString(this.process.getErrorStream());
 			this.job.exitvalue = this.process.exitValue();
+			this.job.status  = 2;
 		} catch(Exception e) {
 			this.job.status = -1;
-			logger.fatal("作业运行中发生致命错误：" + e.getMessage());
+			logger.fatal("致命错误@process：" + e.getMessage());
+			this.job.error = e.getMessage();
 		} finally {
-			this.job.status ++;
-			this.job.finishtime = (System.currentTimeMillis() / 1000);
+			this.job.finishtime = System.currentTimeMillis();
 			this.job.save(this.session);
 			logger.info("作业：" + this.job.name + "于"
 					+ DateFormatUtils.format(new Date(), "yyyy-MM-dd HH:mm:ss")
@@ -185,18 +192,6 @@ public class JobThread implements Runnable {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		HibernateSessionFactory.build(new File("hibernate.cfg.xml"));
-		
-		Config.put("jobserver.path.baseworkdir.realpath", System.getProperty("user.dir") + System.getProperty("file.separator") + "runtimes");
-		Config.put("jobserver.email.smtp", "smtp.gmail.com");
-		Config.put("jobserver.email.username", "lifei@kuxun.com");
-		Config.put("jobserver.email.password", "lifei@kuxun.cn");
-		Config.put("jobserver.email.ssl", "true");
-		Config.put("jobserver.email.cc", "lifei.job@gmail.com lifei.kx@qq.com");
-		
-		XCrawler.initLogger("");
-		JobThread job = new JobThread("lifei@kuxun.com", "测试用程序", "", "\"${System.getProperty('user.dir')}\\test.bat\"");
-		job.run();
 
 	}
 

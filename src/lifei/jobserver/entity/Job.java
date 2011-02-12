@@ -35,9 +35,10 @@ public class Job {
 	public String stderr;
 	public String workdir;
 	public int status;
+	public String error = "";
 
 	public Job() {
-		this.createtime = (System.currentTimeMillis() / 1000);
+		this.createtime = (System.currentTimeMillis());
 		this.executetime = 0;
 		this.finishtime = 0;
 		this.status = 0;
@@ -51,7 +52,7 @@ public class Job {
 	}
 
 	public Job(String user, String command, String name, String desc) {
-		this.createtime = (System.currentTimeMillis() / 1000);
+		this.createtime = System.currentTimeMillis();
 		this.executetime = 0;
 		this.finishtime = 0;
 		this.status = 0;

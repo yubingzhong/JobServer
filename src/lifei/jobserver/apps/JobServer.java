@@ -43,9 +43,11 @@ public class JobServer {
 			server.serve();
 
 		} catch (TTransportException e) {
-			e.printStackTrace();
+			logger.info("启动作业服务器启动失败：" + e.getMessage());
+			e.printStackTrace(System.err);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.info("启动作业服务器启动失败：" + e.getMessage());
+			e.printStackTrace(System.err);
 		}
 	}
 
@@ -88,7 +90,7 @@ public class JobServer {
 			return;
 		}
 		
-		String file = "conf/logging.xml";
+		String file = "conf/log4j.xml";
 
 		if(line.hasOption("l")) {
 			file = line.getOptionValue("l");
@@ -167,10 +169,8 @@ public class JobServer {
 						core_pool_size, max_pool_size, keep_alive_time, work_queue_size));
 		} catch(Exception e) {
 			System.err.println( "初始化作业池失败。" );
-	        System.exit(-1);			
+	        System.exit(-1);
 		}
-		
-		
 
 		JobServer service = new JobServer();
 		service.start();
