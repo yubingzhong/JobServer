@@ -20,6 +20,5 @@ struct Job {
 service JobService {
     i64 submitJob(1: Job job),
     list<i64> submitJobs(1: list<Job> jobs),
-    killJob(1:i64 id),
 }
 

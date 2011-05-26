@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="/Libraries/log4j-1.2.14.jar"/>
+	<classpathentry kind="lib" path="/Libraries/commons-cli-1.2.jar"/>
+	<classpathentry kind="lib" path="/Libraries/commons-configuration-1.2.jar"/>
+	<classpathentry kind="lib" path="/Libraries/commons-lang-2.6.jar"/>
+	<classpathentry kind="lib" path="/Libraries/libthrift.jar"/>
+	<classpathentry kind="lib" path="/Libraries/slf4j-api-1.5.11.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/LFF"/>
+	<classpathentry kind="lib" path="/Libraries/hibernate-jpa-2.0-api-1.0.0.Final.jar"/>
+	<classpathentry kind="lib" path="/Libraries/hibernate3.jar"/>
+	<classpathentry kind="lib" path="/Libraries/javax.persistence.jar"/>
+	<classpathentry kind="lib" path="/Libraries/guava-r08.jar"/>
+	<classpathentry kind="lib" path="/Libraries/commons-io-2.0.1.jar"/>
+	<classpathentry kind="lib" path="/Libraries/commons-email-1.2.jar"/>
+	<classpathentry kind="lib" path="/Libraries/commons-collections-3.2.1.jar"/>
+	<classpathentry kind="lib" path="/Libraries/commons-logging-1.1.1.jar"/>
+	<classpathentry kind="lib" path="/Libraries/dom4j-1.6.1.jar"/>
+	<classpathentry kind="lib" path="/Libraries/slf4j-jdk14-1.5.11.jar"/>
+	<classpathentry kind="lib" path="/Libraries/h2-1.3.150.jar"/>
+	<classpathentry kind="lib" path="/Libraries/javassist-3.12.0.GA.jar"/>
+	<classpathentry kind="lib" path="/Libraries/jga-0.8.1.jar"/>
+	<classpathentry kind="lib" path="/Libraries/jta-1.1.jar"/>
+	<classpathentry kind="lib" path="/Libraries/groovy-all-1.7.3.jar"/>
+	<classpathentry kind="lib" path="/Libraries/mail.jar"/>
+	<classpathentry kind="lib" path="/Libraries/mailapi.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

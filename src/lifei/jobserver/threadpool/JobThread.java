@@ -7,25 +7,22 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 
-import lifei.crawler.apps.XCrawler;
 import lifei.jobserver.config.Config;
 import lifei.jobserver.entity.Job;
 import lifei.jobserver.factory.HibernateSessionFactory;
 import lifei.jobserver.factory.MailThreadPoolFactory;
+import lifei.jobserver.global.JobCounter;
+import lifei.jobserver.global.JobList;
 import lifei.jobserver.helper.EnvHelper;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.time.DateFormatUtils;
-import org.apache.commons.lang.time.DateUtils;
 import org.apache.log4j.Logger;
 import org.codehaus.groovy.control.CompilationFailedException;
 import org.hibernate.Session;
 
-public class JobThread implements Runnable {
+public class JobThread extends Thread {
 	
 	public Job job = null;
 	private Session session = null;	
@@ -36,8 +33,8 @@ public class JobThread implements Runnable {
 	
 	private static Logger logger = Logger.getLogger("JobThread");
 
-	public JobThread(String user, String name, String desc, String command) {		
-		this.job = new Job(user, command, name, desc);		
+	public JobThread(String user, String name, String desc, String type, String command) {		
+		this.job = new Job(user, command, name, type, desc);		
 		this.session = HibernateSessionFactory.getSession();
 		job.save(session);
 	}
@@ -45,16 +42,22 @@ public class JobThread implements Runnable {
 	@Override
 	public void run() {
 		try {
+			JobList.add(this.job.id, this);
+			JobCounter.increase(this.job.type);
 			this.runBefore();
 			this.proccess();
 		} catch (Exception e) {
 			logger.fatal("致命错误@run：" + e.getMessage());
+			e.printStackTrace();
 		} finally {
 			try {
 				this.runAfter();
 			} catch(Exception e) {
 				logger.fatal("致命错误@runAfter：" + e.getMessage());
+				e.printStackTrace();
 			}
+			JobList.remove(this.job.id);
+			JobCounter.decrease(this.job.type);
 		}
 
 	}
@@ -121,10 +124,13 @@ public class JobThread implements Runnable {
 			
 		} catch (CompilationFailedException e) {
 			logger.error("整理邮件内容发送错误@runAfter：" + e.getMessage());
+			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
 			logger.error("整理邮件内容发送错误@runAfter：" + e.getMessage());
+			e.printStackTrace();
 		} catch (IOException e) {
 			logger.error("整理邮件内容发送错误@runAfter：" + e.getMessage());
+			e.printStackTrace();
 		}
 	}
 
@@ -179,7 +185,7 @@ public class JobThread implements Runnable {
 			
 		
 		map.put("conf", Config.getMap());
-		map.put("job", this.job);		
+		map.put("job", this.job);
 
 		Template template = new GStringTemplateEngine()
 				.createTemplate(this.job.command.replaceAll("\\\\", "\\\\\\\\"));

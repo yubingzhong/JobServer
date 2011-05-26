@@ -5,26 +5,25 @@
  */
 package lifei.jobserver.thrift.models;
 
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.EnumMap;
-import java.util.Set;
-import java.util.HashSet;
-import java.util.EnumSet;
-import java.util.Collections;
 import java.util.BitSet;
-import java.nio.ByteBuffer;
-import java.util.Arrays;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.Collections;
+import java.util.EnumMap;
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.Map;
 
-import org.apache.thrift.*;
-import org.apache.thrift.async.*;
-import org.apache.thrift.meta_data.*;
-import org.apache.thrift.transport.*;
-import org.apache.thrift.protocol.*;
+import org.apache.thrift.TBase;
+import org.apache.thrift.TBaseHelper;
+import org.apache.thrift.TException;
+import org.apache.thrift.TFieldIdEnum;
+import org.apache.thrift.TFieldRequirementType;
+import org.apache.thrift.meta_data.FieldMetaData;
+import org.apache.thrift.meta_data.FieldValueMetaData;
+import org.apache.thrift.protocol.TField;
+import org.apache.thrift.protocol.TProtocol;
+import org.apache.thrift.protocol.TProtocolUtil;
+import org.apache.thrift.protocol.TStruct;
+import org.apache.thrift.protocol.TType;
 
 public class Job implements TBase<Job, Job._Fields>, java.io.Serializable, Cloneable {
   private static final TStruct STRUCT_DESC = new TStruct("Job");
@@ -42,7 +41,6 @@ public class Job implements TBase<Job, Job._Fields>, java.io.Serializable, Clone
   private static final TField STDERR_FIELD_DESC = new TField("stderr", TType.STRING, (short)11);
   private static final TField WORKDIR_FIELD_DESC = new TField("workdir", TType.STRING, (short)12);
   private static final TField STATUS_FIELD_DESC = new TField("status", TType.I32, (short)13);
-  private static final TField TYPE_FIELD_DESC = new TField("type", TType.STRING, (short)14);
 
   public long id;
   public String user;
@@ -57,7 +55,6 @@ public class Job implements TBase<Job, Job._Fields>, java.io.Serializable, Clone
   public String stderr;
   public String workdir;
   public int status;
-  public String type;
 
   /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
   public enum _Fields implements TFieldIdEnum {
@@ -73,8 +70,7 @@ public class Job implements TBase<Job, Job._Fields>, java.io.Serializable, Clone
     STDOUT((short)10, "stdout"),
     STDERR((short)11, "stderr"),
     WORKDIR((short)12, "workdir"),
-    STATUS((short)13, "status"),
-    TYPE((short)14, "type");
+    STATUS((short)13, "status");
 
     private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
@@ -115,8 +111,6 @@ public class Job implements TBase<Job, Job._Fields>, java.io.Serializable, Clone
           return WORKDIR;
         case 13: // STATUS
           return STATUS;
-        case 14: // TYPE
-          return TYPE;
         default:
           return null;
       }
@@ -194,8 +188,6 @@ public class Job implements TBase<Job, Job._Fields>, java.io.Serializable, Clone
         new FieldValueMetaData(TType.STRING)));
     tmpMap.put(_Fields.STATUS, new FieldMetaData("status", TFieldRequirementType.DEFAULT, 
         new FieldValueMetaData(TType.I32)));
-    tmpMap.put(_Fields.TYPE, new FieldMetaData("type", TFieldRequirementType.DEFAULT, 
-        new FieldValueMetaData(TType.STRING)));
     metaDataMap = Collections.unmodifiableMap(tmpMap);
     FieldMetaData.addStructMetaDataMap(Job.class, metaDataMap);
   }
@@ -216,8 +208,7 @@ public class Job implements TBase<Job, Job._Fields>, java.io.Serializable, Clone
     String stdout,
     String stderr,
     String workdir,
-    int status,
-    String type)
+    int status)
   {
     this();
     this.id = id;
@@ -239,7 +230,6 @@ public class Job implements TBase<Job, Job._Fields>, java.io.Serializable, Clone
     this.workdir = workdir;
     this.status = status;
     setStatusIsSet(true);
-    this.type = type;
   }
 
   /**
@@ -275,9 +265,6 @@ public class Job implements TBase<Job, Job._Fields>, java.io.Serializable, Clone
       this.workdir = other.workdir;
     }
     this.status = other.status;
-    if (other.isSetType()) {
-      this.type = other.type;
-    }
   }
 
   public Job deepCopy() {
@@ -305,7 +292,6 @@ public class Job implements TBase<Job, Job._Fields>, java.io.Serializable, Clone
     this.workdir = null;
     setStatusIsSet(false);
     this.status = 0;
-    this.type = null;
   }
 
   public long getId() {
@@ -614,30 +600,6 @@ public class Job implements TBase<Job, Job._Fields>, java.io.Serializable, Clone
     __isset_bit_vector.set(__STATUS_ISSET_ID, value);
   }
 
-  public String getType() {
-    return this.type;
-  }
-
-  public Job setType(String type) {
-    this.type = type;
-    return this;
-  }
-
-  public void unsetType() {
-    this.type = null;
-  }
-
-  /** Returns true if field type is set (has been asigned a value) and false otherwise */
-  public boolean isSetType() {
-    return this.type != null;
-  }
-
-  public void setTypeIsSet(boolean value) {
-    if (!value) {
-      this.type = null;
-    }
-  }
-
   public void setFieldValue(_Fields field, Object value) {
     switch (field) {
     case ID:
@@ -744,14 +706,6 @@ public class Job implements TBase<Job, Job._Fields>, java.io.Serializable, Clone
       }
       break;
 
-    case TYPE:
-      if (value == null) {
-        unsetType();
-      } else {
-        setType((String)value);
-      }
-      break;
-
     }
   }
 
@@ -796,9 +750,6 @@ public class Job implements TBase<Job, Job._Fields>, java.io.Serializable, Clone
     case STATUS:
       return new Integer(getStatus());
 
-    case TYPE:
-      return getType();
-
     }
     throw new IllegalStateException();
   }
@@ -836,8 +787,6 @@ public class Job implements TBase<Job, Job._Fields>, java.io.Serializable, Clone
       return isSetWorkdir();
     case STATUS:
       return isSetStatus();
-    case TYPE:
-      return isSetType();
     }
     throw new IllegalStateException();
   }
@@ -969,15 +918,6 @@ public class Job implements TBase<Job, Job._Fields>, java.io.Serializable, Clone
       if (!(this_present_status && that_present_status))
         return false;
       if (this.status != that.status)
-        return false;
-    }
-
-    boolean this_present_type = true && this.isSetType();
-    boolean that_present_type = true && that.isSetType();
-    if (this_present_type || that_present_type) {
-      if (!(this_present_type && that_present_type))
-        return false;
-      if (!this.type.equals(that.type))
         return false;
     }
 
@@ -1127,16 +1067,6 @@ public class Job implements TBase<Job, Job._Fields>, java.io.Serializable, Clone
         return lastComparison;
       }
     }
-    lastComparison = Boolean.valueOf(isSetType()).compareTo(typedOther.isSetType());
-    if (lastComparison != 0) {
-      return lastComparison;
-    }
-    if (isSetType()) {
-      lastComparison = TBaseHelper.compareTo(this.type, typedOther.type);
-      if (lastComparison != 0) {
-        return lastComparison;
-      }
-    }
     return 0;
   }
 
@@ -1251,13 +1181,6 @@ public class Job implements TBase<Job, Job._Fields>, java.io.Serializable, Clone
             TProtocolUtil.skip(iprot, field.type);
           }
           break;
-        case 14: // TYPE
-          if (field.type == TType.STRING) {
-            this.type = iprot.readString();
-          } else { 
-            TProtocolUtil.skip(iprot, field.type);
-          }
-          break;
         default:
           TProtocolUtil.skip(iprot, field.type);
       }
@@ -1326,11 +1249,6 @@ public class Job implements TBase<Job, Job._Fields>, java.io.Serializable, Clone
     oprot.writeFieldBegin(STATUS_FIELD_DESC);
     oprot.writeI32(this.status);
     oprot.writeFieldEnd();
-    if (this.type != null) {
-      oprot.writeFieldBegin(TYPE_FIELD_DESC);
-      oprot.writeString(this.type);
-      oprot.writeFieldEnd();
-    }
     oprot.writeFieldStop();
     oprot.writeStructEnd();
   }
@@ -1418,14 +1336,6 @@ public class Job implements TBase<Job, Job._Fields>, java.io.Serializable, Clone
     if (!first) sb.append(", ");
     sb.append("status:");
     sb.append(this.status);
-    first = false;
-    if (!first) sb.append(", ");
-    sb.append("type:");
-    if (this.type == null) {
-      sb.append("null");
-    } else {
-      sb.append(this.type);
-    }
     first = false;
     sb.append(")");
     return sb.toString();

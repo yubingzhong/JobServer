@@ -37,7 +37,10 @@ public class Job {
 	public int status;
 	public String error = "";
 
-	public Job() {
+	public String type = "";
+
+	@SuppressWarnings("unused")
+	private Job() {
 		this.createtime = (System.currentTimeMillis());
 		this.executetime = 0;
 		this.finishtime = 0;
@@ -51,7 +54,7 @@ public class Job {
 		this.command = "";
 	}
 
-	public Job(String user, String command, String name, String desc) {
+	public Job(String user, String command, String name, String type, String desc) {
 		this.createtime = System.currentTimeMillis();
 		this.executetime = 0;
 		this.finishtime = 0;
@@ -63,6 +66,7 @@ public class Job {
 		this.name = name;
 		this.desc = desc;
 		this.command = command;
+		this.type = type;
 	}
 	
 	public boolean save(Session session) {
@@ -85,13 +89,4 @@ public class Job {
 
 		return true;
 	}
-
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
-	}
-
 }

@@ -41,12 +41,11 @@ public class JobServer {
 					protFactory);
 			logger.info("启动作业服务器，端口号：" + Config.get("jobserver.port"));
 			server.serve();
-
 		} catch (TTransportException e) {
-			logger.info("启动作业服务器启动失败：" + e.getMessage());
+			logger.error("启动作业服务器启动失败：" + e.getMessage());
 			e.printStackTrace(System.err);
 		} catch (Exception e) {
-			logger.info("启动作业服务器启动失败：" + e.getMessage());
+			logger.error("启动作业服务器启动失败：" + e.getMessage());
 			e.printStackTrace(System.err);
 		}
 	}
@@ -72,6 +71,8 @@ public class JobServer {
 		options.addOption( help );
 		options.addOption( logging );
 		
+		System.out.println("解析命令行");
+		
 	    CommandLineParser parser = new PosixParser();
 	    CommandLine line = null;
 	    try {
@@ -90,6 +91,7 @@ public class JobServer {
 			return;
 		}
 		
+		System.out.println("加载日志配置");
 		String file = "conf/log4j.xml";
 
 		if(line.hasOption("l")) {
@@ -114,6 +116,7 @@ public class JobServer {
 	        System.exit(-1);
 		}
 		
+		System.out.println("加载配置");
 		String configfile = "conf/jobserver.properties";
 		if(line.hasOption('c')) {
 			configfile = line.getOptionValue("c");
@@ -126,18 +129,20 @@ public class JobServer {
 	        System.exit(-1);
 		}
 		
+		System.out.println("初始化Hibernate");
 		Config.build(ConfigurationFactory.getConfig());
 		
 		File cfgfile = new File(Config.get("hibernate.config.file"));
-		if(cfgfile.exists() && cfgfile.isFile()) {	
+		if(cfgfile.exists() && cfgfile.isFile()) {
+			HibernateSessionFactory.build(cfgfile);
 			logger.info("加载Hibernate配置：" + cfgfile.getPath());
-			HibernateSessionFactory.build(cfgfile);			
 		} else {
 			System.err.println( "Hibernate配置文件出错: 指定的文件不存在。" + Config.get("hibernate.config.file"));
 	        System.exit(-1);			
 		}
 		
 		
+		System.out.println("初始化邮件池");
 		try {
 			String email = Config.get("jobserver.email");
 		
@@ -158,15 +163,16 @@ public class JobServer {
 	        System.exit(-1);			
 		}
 		
+		System.out.println("初始化作业池");
 		try {
-				int core_pool_size = Integer.parseInt(Config.get("jobserver.jobthreadpool.core_pool_size"));
-				int max_pool_size = Integer.parseInt(Config.get("jobserver.jobthreadpool.max_pool_size"));
-				long keep_alive_time = Integer.parseInt(Config.get("jobserver.jobthreadpool.keep_alive_time"));
-				int work_queue_size = Integer.parseInt(Config.get("jobserver.jobthreadpool.work_queue_size"));
-				
-				JobThreadPoolFactory.build(core_pool_size, max_pool_size, keep_alive_time, work_queue_size);
-				logger.info(String.format("初始化作业池: %d - %d - %d - %d。", 
-						core_pool_size, max_pool_size, keep_alive_time, work_queue_size));
+			int core_pool_size = Integer.parseInt(Config.get("jobserver.jobthreadpool.core_pool_size"));
+			int max_pool_size = Integer.parseInt(Config.get("jobserver.jobthreadpool.max_pool_size"));
+			long keep_alive_time = Integer.parseInt(Config.get("jobserver.jobthreadpool.keep_alive_time"));
+			int work_queue_size = Integer.parseInt(Config.get("jobserver.jobthreadpool.work_queue_size"));
+
+			JobThreadPoolFactory.build(core_pool_size, max_pool_size, keep_alive_time, work_queue_size);
+			logger.info(String.format("初始化作业池: %d - %d - %d - %d。", 
+					core_pool_size, max_pool_size, keep_alive_time, work_queue_size));
 		} catch(Exception e) {
 			System.err.println( "初始化作业池失败。" );
 	        System.exit(-1);

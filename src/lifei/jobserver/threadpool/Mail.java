@@ -56,17 +56,17 @@ public final class Mail implements Runnable {
 			
 			Iterator<String> iter = this.to.iterator();
 			
-			do {
+			while(iter.hasNext()) {
 				String to = iter.next();
 				email.addTo(to);
-			} while(iter.hasNext());
+			}
 			
 			iter = this.cc.iterator();
 			
-			do {
+			while(iter.hasNext()) {
 				String cc = iter.next();
 				email.addCc(cc);
-			} while(iter.hasNext());
+			}
 			
 			email.setCharset("utf-8");
 			email.send();
